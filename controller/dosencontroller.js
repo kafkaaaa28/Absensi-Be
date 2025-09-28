@@ -53,5 +53,27 @@ const dosenController = {
       res.status(500).json({ message: err.message });
     }
   },
+  getSiswakelas: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const DosenId = req.user.id_dosen;
+      const SiswaKelas = await Dosen.getSiswaPerkelas(id, DosenId);
+      res.json(SiswaKelas);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  },
+  UpdateAbsenSiswa: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const Update = await Dosen.UpdateAbsen(id, { status });
+      res.json(Update);
+      res.json({ message: 'Status absensi diperbarui' });
+    } catch (err) {
+      res.status(500).json({ error: 'Gagal update absensi' });
+    }
+  },
 };
 module.exports = dosenController;

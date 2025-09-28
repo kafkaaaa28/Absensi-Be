@@ -72,7 +72,6 @@ const Kelascontroller = {
   updateKelasSiswa: async (req, res) => {
     try {
       const { id_kelas, id_siswa } = req.body;
-      console.log(req.body);
       const allKelasSiswa = await Kelas.CheckKelas();
 
       const siswaDiKelas = allKelasSiswa.some((entry) => entry.id_kelas === id_kelas && entry.id_siswa === id_siswa);

@@ -4,7 +4,23 @@ const Users = require('../model/users');
 const JadwalController = {
   create: async (req, res) => {
     try {
-      const newJadwal = await Jadwal.create(req.body);
+      const { id_kelas, hari, jam_mulai, ruang, sks } = req.body;
+      const tambahMenit = (waktu, menitTambah) => {
+        const [jam, menit] = waktu.split(':').map(Number);
+        const totalMenit = jam * 60 + menit + menitTambah;
+        const jamBaru = Math.floor(totalMenit / 60) % 24;
+        const menitBaru = totalMenit % 60;
+        return `${String(jamBaru).padStart(2, '0')}:${String(menitBaru).padStart(2, '0')}`;
+      };
+      const waktuBaru = tambahMenit(jam_mulai, sks * 50);
+
+      const newJadwal = await Jadwal.create({
+        id_kelas,
+        hari,
+        jam_mulai,
+        jam_selesai: waktuBaru,
+        ruang,
+      });
       res.status(201).json(newJadwal);
     } catch (err) {
       res.status(500).json({ error: `Gagal membuat jadwal ${err.message} ` });
@@ -28,7 +44,16 @@ const JadwalController = {
   },
   update: async (req, res) => {
     try {
-      const updated = await Jadwal.update(req.params.id, req.body);
+      const { id_kelas, hari, jam_mulai, ruang, sks } = req.body;
+      const tambahMenit = (waktu, menitTambah) => {
+        const [jam, menit] = waktu.split(':').map(Number);
+        const totalMenit = jam * 60 + menit + menitTambah;
+        const jamBaru = Math.floor(totalMenit / 60) % 24;
+        const menitBaru = totalMenit % 60;
+        return `${String(jamBaru).padStart(2, '0')}:${String(menitBaru).padStart(2, '0')}`;
+      };
+      const waktuBaru = tambahMenit(jam_mulai, sks * 50);
+      const updated = await Jadwal.update(req.params.id, { id_kelas, hari, jam_mulai, jam_selesai: waktuBaru, ruang });
       res.json(updated);
     } catch (err) {
       res.status(500).json({ error: 'Gagal update jadwal' });

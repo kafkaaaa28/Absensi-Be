@@ -32,7 +32,7 @@ class Dosen {
   }
   static async getKelasDosen(id) {
     const [rows] = await db.query(
-      `SELECT kelas_siswa.id_matkul , kelas_siswa.id_dosen , kelas_siswa.nama_kelas,  matkul.* ,dosen.id_dosen FROM kelas_siswa JOIN matkul ON kelas_siswa.id_matkul = matkul.id_matkul LEFT JOIN dosen ON kelas_siswa.id_dosen = dosen.id_dosen WHERE dosen.id_dosen = ? `,
+      `SELECT kelas_siswa.id_matkul , kelas_siswa.id_kelas, kelas_siswa.id_dosen , kelas_siswa.nama_kelas,  matkul.* ,dosen.id_dosen FROM kelas_siswa JOIN matkul ON kelas_siswa.id_matkul = matkul.id_matkul LEFT JOIN dosen ON kelas_siswa.id_dosen = dosen.id_dosen WHERE dosen.id_dosen = ? `,
       [id]
     );
     return rows;
@@ -47,6 +47,33 @@ class Dosen {
       [id]
     );
     return rows;
+  }
+  static async getSiswaPerkelas(id_kelas, id_dosen) {
+    const [rows] = await db.query(
+      `
+      SELECT 
+  siswakelas.*, 
+  kelas_siswa.id_dosen, 
+  kelas_siswa.id_kelas, 
+  siswa.id_siswa, 
+  siswa.id_user, 
+  siswa.nim, 
+  siswa.semester, 
+  users.id_user AS user_id, 
+  users.nama
+FROM siswakelas
+JOIN kelas_siswa ON siswakelas.id_kelas = kelas_siswa.id_kelas
+LEFT JOIN siswa ON siswakelas.id_siswa = siswa.id_siswa
+LEFT JOIN users ON siswa.id_user = users.id_user
+WHERE siswakelas.id_kelas = ? AND kelas_siswa.id_dosen = ? `,
+      [id_kelas, id_dosen]
+    );
+    return rows;
+  }
+  static async UpdateAbsen(id, data) {
+    const { status } = data;
+    await db.query(`UPDATE absensi SET status = ? WHERE id_absen = ?`, [status, id]);
+    return { id_absen: id, ...data };
   }
 }
 

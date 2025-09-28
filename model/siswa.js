@@ -5,8 +5,7 @@ class Siswa {
     const [rows] = await db.query(
       `SELECT 
        ms.*, 
-       m.nama_matkul, 
-       m.kode_matkul 
+       m.* 
      FROM 
        matkul_siswa ms
      JOIN 

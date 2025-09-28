@@ -2,11 +2,11 @@ const db = require('../config/db');
 
 class Matkul {
   static async create(data) {
-    const { nama_matkul, semester, kode_matkul } = data;
+    const { nama_matkul, semester, sks, kode_matkul } = data;
     const [result] = await db.query(
-      `INSERT INTO matkul (nama_matkul,  semester, kode_matkul)
-       VALUES (?,?,?)`,
-      [nama_matkul, semester, kode_matkul]
+      `INSERT INTO matkul (nama_matkul,  semester, sks, kode_matkul)
+       VALUES (?,?,? ,?)`,
+      [nama_matkul, semester, sks, kode_matkul]
     );
     return { id_matkul: result.insertId, ...data };
   }
@@ -19,12 +19,12 @@ class Matkul {
     return rows[0];
   }
   static async update(id, data) {
-    const { nama_matkul, semester, kode_matkul } = data;
+    const { nama_matkul, semester, sks, kode_matkul } = data;
     await db.query(
       `UPDATE matkul 
-       SET nama_matkul=?,  semester=?,  kode_matkul=? 
+       SET nama_matkul=?,  semester=?, sks=? ,  kode_matkul=? 
        WHERE id_matkul=?`,
-      [nama_matkul, semester, kode_matkul, id]
+      [nama_matkul, semester, sks, kode_matkul, id]
     );
     return { id_matkul: id, ...data };
   }
