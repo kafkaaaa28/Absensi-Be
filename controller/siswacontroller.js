@@ -38,10 +38,54 @@ const siswaController = {
     try {
       const SiswaId = req.user.id;
       const Profile = await Siswa.ProfileSiswa(SiswaId);
-      res.json(Profile);
+      const qrPath = `/qr/${SiswaId}.png`;
+      console.log(qrPath);
+      res.json({ data: Profile, qr: qrPath });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err.message });
+    }
+  },
+  getQrcodeSiswa: async (req, res) => {
+    try {
+      const SiswaId = req.user.id;
+      const siswa = await Siswa.getqrSiswa(SiswaId);
+      const qrUrl = `/qr/${SiswaId}.png`;
+      res.json({ data: siswa, qr: qrUrl });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  },
+  CheckFaceDaftar: async (req, res) => {
+    try {
+      const SiswaId = req.user.id;
+      const cek = await Siswa.CheckFace(SiswaId);
+      if (cek.length > 0 && cek[0].face_embedding) {
+        res.json({ hasFace: true });
+      } else {
+        res.json({ hasFace: false });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  },
+  registerFace: async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { face_embedding } = req.body;
+      console.log(face_embedding);
+      if (!face_embedding) {
+        return res.status(400).json({ message: 'Face embedding tidak ditemukan' });
+      }
+
+      await Siswa.saveFaceEmbedding(userId, req.body);
+
+      res.status(200).json({ message: 'Face embedding berhasil disimpan' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Gagal simpan face embedding' });
     }
   },
 };

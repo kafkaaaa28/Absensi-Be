@@ -16,7 +16,7 @@ class Jadwal {
   }
   static async getAlljadwal() {
     const [rows] = await db.query(
-      `SELECT jadwal_matkul.*, kelas_siswa.id_kelas , kelas_siswa.id_matkul, kelas_siswa.nama_kelas, matkul.id_matkul, matkul.nama_matkul, matkul.kode_matkul
+      `SELECT jadwal_matkul.*, kelas_siswa.id_kelas , kelas_siswa.id_matkul, kelas_siswa.nama_kelas, matkul.id_matkul, matkul.sks,matkul.nama_matkul, matkul.kode_matkul
      FROM jadwal_matkul
      LEFT JOIN kelas_siswa ON jadwal_matkul.id_kelas = kelas_siswa.id_kelas LEFT JOIN matkul ON kelas_siswa.id_matkul = matkul.id_matkul`
     );

@@ -89,5 +89,18 @@ class Siswa {
     );
     return rows;
   }
+  static async getqrSiswa(id) {
+    const [rows] = await db.query(`SELECT id_siswa, qr_code FROM siswa WHERE id_user = ?`, [id]);
+    return rows;
+  }
+  static async CheckFace(id) {
+    const [rows] = await db.query(`SELECT face_embedding FROM siswa WHERE id_user = ?`, [id]);
+    return rows;
+  }
+  static async saveFaceEmbedding(id, data) {
+    const { face_embedding } = data;
+    await db.query(`UPDATE siswa SET face_embedding = ? WHERE id_user = ?`, [face_embedding, id]);
+    return { id_siswa: id, ...data };
+  }
 }
 module.exports = Siswa;

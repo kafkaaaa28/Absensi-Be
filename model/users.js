@@ -12,8 +12,8 @@ class Users {
     return { id_user: result.insertId, ...userData };
   }
   static async createSiswa(id_user, userData) {
-    const { nim, semester, fakultas, prodi } = userData;
-    await db.query(`INSERT INTO siswa (id_user, nim, semester , fakultas ,prodi  ) VALUES (?, ?, ?,?,?)`, [id_user, nim, semester, fakultas, prodi]);
+    const { nim, semester, fakultas, prodi, qr_code } = userData;
+    await db.query(`INSERT INTO siswa (id_user, nim, semester , fakultas ,prodi ,qr_code  ) VALUES (?,?,?,?,?,?)`, [id_user, nim, semester, fakultas, prodi, qr_code]);
     return { id_user, ...userData };
   }
   static async createDosen(id_user, userData) {

@@ -46,7 +46,15 @@ const JadwalController = {
     try {
       const { id_kelas, hari, jam_mulai, ruang, sks } = req.body;
       const tambahMenit = (waktu, menitTambah) => {
-        const [jam, menit] = waktu.split(':').map(Number);
+        if (!waktu || !waktu.includes(':')) {
+          throw new Error('Format waktu tidak valid');
+        }
+        const [jamStr, menitStr] = waktu.split(':');
+        const jam = Number(jamStr);
+        const menit = Number(menitStr);
+        if (isNaN(jam) || isNaN(menit)) {
+          throw new Error('Waktu tidak dalam format yang benar');
+        }
         const totalMenit = jam * 60 + menit + menitTambah;
         const jamBaru = Math.floor(totalMenit / 60) % 24;
         const menitBaru = totalMenit % 60;
@@ -54,6 +62,7 @@ const JadwalController = {
       };
       const waktuBaru = tambahMenit(jam_mulai, sks * 50);
       const updated = await Jadwal.update(req.params.id, { id_kelas, hari, jam_mulai, jam_selesai: waktuBaru, ruang });
+      console.log(updated);
       res.json(updated);
     } catch (err) {
       res.status(500).json({ error: 'Gagal update jadwal' });
