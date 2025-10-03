@@ -9,4 +9,7 @@ router.get('/siswakelas/:id', authMiddleware, dosenMiddleware, DosenController.g
 router.get('/kelasdosen', authMiddleware, dosenMiddleware, DosenController.getKelas);
 router.get('/profiledosen', authMiddleware, dosenMiddleware, DosenController.getProfileDosen);
 router.put('/absen/:id', authMiddleware, dosenMiddleware, DosenController.UpdateAbsenSiswa);
+router.post('/absensi/:idKelas/:jadwalId', authMiddleware, dosenMiddleware, DosenController.BukaAbsensi);
+router.get('/absensi/siswa/:id', authMiddleware, dosenMiddleware, DosenController.getAbsensiKelas);
+
 module.exports = router;

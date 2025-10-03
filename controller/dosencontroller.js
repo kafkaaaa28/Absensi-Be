@@ -75,5 +75,30 @@ const dosenController = {
       res.status(500).json({ error: 'Gagal update absensi' });
     }
   },
+  BukaAbsensi: async (req, res) => {
+    try {
+      const { idKelas, jadwalId } = req.params;
+      const DosenId = req.user.id_dosen;
+      const SiswaKelas = await Dosen.getSiswaPerkelas(idKelas, DosenId);
+      for (let s of SiswaKelas) {
+        await Dosen.bukaAbsen({ id_siswa: s.id_siswa, idKelas, jadwalId });
+      }
+      res.status(200).json({ message: 'Absensi telah dibuka untuk semua siswa' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  },
+  getAbsensiKelas: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const get = await Dosen.getSiswaJadwal(id);
+      console.log(id);
+      res.json(get);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  },
 };
 module.exports = dosenController;

@@ -71,9 +71,30 @@ WHERE siswakelas.id_kelas = ? AND kelas_siswa.id_dosen = ? `,
     return rows;
   }
   static async UpdateAbsen(id, data) {
-    const { status } = data;
-    await db.query(`UPDATE absensi SET status = ? WHERE id_absen = ?`, [status, id]);
+    const { status, method } = data;
+    await db.query(`UPDATE absensi SET status = ?, SET method = ? WHERE id_absen = ?`, [status, id]);
     return { id_absen: id, ...data };
+  }
+  static async bukaAbsen(data) {
+    const { id_siswa, idKelas, jadwalId } = data;
+    const [result] = await db.query(
+      `INSERT INTO absensi (id_siswa, id_kelas, id_jadwal, status)
+         VALUES (?, ?, ?, 'alpha')
+         ON DUPLICATE KEY UPDATE status = 'alpha'`,
+      [id_siswa, idKelas, jadwalId]
+    );
+    return { id_absen: result.insertId, ...data };
+  }
+  static async getSiswaJadwal(id_jadwal) {
+    const [rows] = await db.query(
+      `SELECT absensi.*, users.id_user, users.nama, siswa.id_siswa, siswa.id_user
+       FROM absensi
+       JOIN siswa ON absensi.id_siswa = siswa.id_siswa
+       LEFT JOIN users ON siswa.id_user = users.id_user
+       WHERE absensi.id_jadwal = ?`,
+      [id_jadwal]
+    );
+    return rows;
   }
 }
 
